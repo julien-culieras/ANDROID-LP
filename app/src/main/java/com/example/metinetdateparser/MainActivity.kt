@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 textView.text = response.getString("fulldate")
             },
             Response.ErrorListener { error ->
-                textView.text = "Erreur : ${error}"
+                textView.text = "Erreur : $error"
             }
         )
         queue.add(jsonObjectRequest)
