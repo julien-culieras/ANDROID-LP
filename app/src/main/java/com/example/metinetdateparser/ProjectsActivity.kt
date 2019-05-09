@@ -1,9 +1,11 @@
 package com.example.metinetdateparser
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ListView
+import android.widget.Toast
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -26,6 +28,7 @@ class ProjectsActivity : AppCompatActivity() {
     fun run(url: String) {
         val request = Request.Builder()
             .url(url)
+            .header("X-AUTH-TOKEN", "admin_key")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -37,7 +40,7 @@ class ProjectsActivity : AppCompatActivity() {
                 val str_response = response.body()!!.string()
                 Log.d("DEBUG", str_response)
                 //creating json object
-                val json_contact:JSONObject = JSONObject(str_response).getJSONObject("data").getJSONObject("projects");
+                val json_contact:JSONObject = JSONObject(str_response).getJSONObject("data").getJSONObject("projects")
                 //creating json array
                 val jsonarray_info:JSONArray= json_contact.getJSONArray("elements")
                 var i:Int = 0
@@ -45,7 +48,7 @@ class ProjectsActivity : AppCompatActivity() {
                 arrayList_details= ArrayList()
                 for (i in 0.. size-1) {
                     val json_objectdetail:JSONObject=jsonarray_info.getJSONObject(i)
-                    val project:Project= Project();
+                    val project:Project= Project()
                     project.id=json_objectdetail.getString("id")
                     project.name=json_objectdetail.getString("name")
                     project.description=json_objectdetail.getString("description")
@@ -61,5 +64,12 @@ class ProjectsActivity : AppCompatActivity() {
                 }
             }
         })
+
+        listView_details.setOnItemClickListener { parent, view, position, id ->
+            val idProject = arrayList_details[position].id
+            val intent = Intent(applicationContext,ProjectDetailsActivity::class.java)
+            intent.putExtra("project_id",idProject)
+            startActivity(intent)
+        }
     }
 }

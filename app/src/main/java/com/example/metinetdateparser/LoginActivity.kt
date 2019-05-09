@@ -24,6 +24,7 @@ import android.widget.TextView
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Log
 
 import kotlinx.android.synthetic.main.activity_login.*
@@ -40,11 +41,15 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    private var PRIVATE_MODE = 0
+    private val PREF_NAME = "token"
+
     private var mAuthTask: UserLoginTask? = null
 
     private var token :String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         // Set up the login form.
