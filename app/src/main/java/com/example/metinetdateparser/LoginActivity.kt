@@ -21,10 +21,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Handler
 import android.util.Log
 
 import kotlinx.android.synthetic.main.activity_login.*
@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.util.*
+import kotlin.concurrent.schedule
 
 /**
  * A login screen that offers login via email/password.
@@ -47,11 +49,14 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
     private var mAuthTask: UserLoginTask? = null
 
     private var token :String? = null
+    private var tokenDefine :Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        tokenDefine = false
+        token = null
         // Set up the login form.
         populateAutoComplete()
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -269,6 +274,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         override fun doInBackground(vararg params: Void): Boolean? {
             // TODO: attempt authentication against a network service.
             try {
+                tokenDefine = true
                 // Simulate network access.
                 // Thread.sleep(2000)
                 val request = Request.Builder()
@@ -299,16 +305,19 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         }
 
         override fun onPostExecute(success: Boolean?) {
-            mAuthTask = null
-            showProgress(false)
+            Handler().postDelayed({
+                mAuthTask = null
+                showProgress(false)
+                Log.d("DEBUG", "Token : " + token.toString())
+                token?.let {
+                    val intent = Intent(applicationContext,MainActivity::class.java)
+                    startActivity(intent)
+                } ?: run{
+                    password.error = getString(R.string.error_incorrect_password)
+                    password.requestFocus()
+                }
+            }, 1500)
 
-            Log.d("DEBUG", token.toString())
-            token?.let {
-                val intent = Intent(applicationContext,MainActivity::class.java)
-                startActivity(intent)
-            }
-            password.error = getString(R.string.error_incorrect_password)
-            password.requestFocus()
         }
 
         override fun onCancelled() {
