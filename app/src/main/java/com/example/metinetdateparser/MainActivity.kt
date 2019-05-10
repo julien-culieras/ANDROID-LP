@@ -19,16 +19,12 @@ class MainActivity : AppCompatActivity() {
 
         val textView = findViewById<TextView>(R.id.jsonResponse)
         val btnProjects = findViewById<Button>(R.id.btnListProjects)
-        val btnStudents = findViewById<Button>(R.id.btnListStudents)
 
         btnProjects.setOnClickListener {view ->
             val intent = Intent(applicationContext,ProjectsActivity::class.java)
             startActivity(intent)
         }
 
-        btnStudents.setOnClickListener {
-            Toast.makeText(this@MainActivity, "You clicked me.", Toast.LENGTH_SHORT).show()
-        }
 
         val queue = Volley.newRequestQueue(this)
         val url = "https://script.googleusercontent.com/macros/echo?user_content_key=qU9oQrcNJv4QHBRENSTLMt-ZmrwQTnr8y7ZTB6JN39KAWTwY2jVjZNIW3cO8TWTCGJUoPCj-6BAYU_DRnRNkATDO6h2lacHZm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJ9GRkcRevgjTvo8Dc32iw_BLJPcPfRdVKhJT5HNzQuXEeN3QFwl2n0M6ZmO-h7C6bwVq0tbM60-YSRgvERRRx_Glx38N8iKHQ&lib=MwxUjRcLr2qLlnVOLh12wSNkqcO1Ikdrk"
